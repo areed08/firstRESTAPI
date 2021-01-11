@@ -45,8 +45,8 @@ def get_user(id):
       for user in users['users_list']:
         if user['id'] == id:
            return user
-      return users({})
-   return 
+      return ({})
+   return users
 
 @app.route('/users', methods=['GET', 'POST'])
 def get_users():
@@ -54,10 +54,19 @@ def get_users():
       search_username = request.args.get('name')
       if search_username :
          subdict = {'users_list' : []}
-         for user in users['users_list']:
-            if user['name'] == search_username:
-               subdict['users_list'].append(user)
-         return subdict
+         search_job = request.args.get('job')
+         if  search_job :
+            for user in users['users_list']:
+               if user['name'] == search_username:
+                  if user['job'] == search_job:
+                     subdict['users_list'].append(user)
+            return subdict
+         else :
+            for user in users['users_list']:
+               if user['name'] == search_username:
+                  subdict['users_list'].append(user)
+            return subdict
+
       return users
    elif request.method == 'POST':
       userToAdd = request.get_json()
