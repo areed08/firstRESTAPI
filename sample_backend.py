@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask_cors import CORS
+import uuid
 
 app = Flask(__name__)
 CORS(app)
@@ -68,19 +69,17 @@ def get_users():
                if user['name'] == search_username:
                   if user['job'] == search_job:
                      subdict['users_list'].append(user)
-            return subdict
+            return jsonify(subdict), 201
          else :
             for user in users['users_list']:
                if user['name'] == search_username:
                   subdict['users_list'].append(user)
-            return subdict
-
-      return users
+            return jsonify(subdict), 201
+      return jsonify(users), 201
    elif request.method == 'POST':
       userToAdd = request.get_json()
+      userToAdd['id'] = uuid.uuid4()
       users['users_list'].append(userToAdd)
-      resp = jsonify(success=True)
-      #resp.status_code = 200 #optionally, you can always set a response code. 
-      # 200 is the default code for a normal response
+      resp = jsonify(userToAdd), 201
       return resp
     
